@@ -3,13 +3,13 @@ Course Number: ENGR 13300
 Semester: e.g. Spring 2026
 
 Description:
-    Replace this line with a description of your program.
+    In this assignment I do some mathematical calculations in Python to learn the basics.
 
 Assignment Information:
-    Assignment:     e.g. 7.2.1 Py1 Team 1 (for Python 1 Team task 1)
-    Team ID:        ### - ## (e.g. LC1 - 01; for section LC1, team 01)
-    Author:         Name, login@purdue.edu
-    Date:           e.g. 01/23/2026
+    Assignment:     13.1.2 Python 1 Pre Task 0
+    Team ID:        LC5
+    Author:         Zheng Yang Stephen Lim, lim573@purdue.edu
+    Date:           e.g. 09/06/2026
 
 Contributors:
     Name, login@purdue [repeat for each]
@@ -31,12 +31,18 @@ Academic Integrity Statement:
     submitting is my own original work.
 """
 
-""" Write any import statements here (and delete this line)."""
+import math
 
 
 def main():
-    """Write your code here (and delete this line)."""
-
-
+    a = 101
+    b = 7
+    c = 12.34
+    var1 = math.pow(c,2) - math.pow((math.sin(b)),2)
+    var2 = math.factorial(b) * (math.cos(math.pi/c) - a)
+    var3 = (math.pow(c,math.e*math.pi)*math.asin(math.sqrt(3)/2))/(b*math.pow(a,math.e))
+    print("equation 1: " + f"{var1:.3f}")
+    print("equation 2: " + f"{var2:.3f}")
+    print("equation 3: " + f"{var3:.3f}")
 if __name__ == "__main__":
     main()
