@@ -44,5 +44,7 @@ def main():
     print("equation 1: " + f"{var1:.3f}")
     print("equation 2: " + f"{var2:.3f}")
     print("equation 3: " + f"{var3:.3f}")
+    
+    
 if __name__ == "__main__":
     main()
