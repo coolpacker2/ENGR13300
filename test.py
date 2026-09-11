@@ -1,1 +1,5 @@
-print("hello world")
+from fractions import Fraction
+
+
+print(float(3))
+
