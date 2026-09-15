@@ -53,7 +53,7 @@ def main():
 
     #< and > are used to align the text in the output, the number is the amount of characters that the output will be forced into
     # Print headers and formatted rows (12-space width for number columns)
-    print(f"{'Type':<8}{'First':>12}{'Second':>12}{'Total ':>12}")
+    print(f"{'Type':<8}{'First':>12}{'Second':>11}{'Total':>12}")
     print(f"{'Series':<8}{u1_str:>12}{u2_str:>12}{series_str:>12}")
     print(f"{'Parallel':<8}{u1_str:>12}{u2_str:>12}{parallel_str:>12}")
     #1f sets it to one decimal place
