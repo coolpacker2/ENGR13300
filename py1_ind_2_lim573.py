@@ -36,7 +36,7 @@ def main():
     u1 = float(input("Input the capacitance of the first capacitor [μF]: "))
     #little bonus, don't let u1 be 0
 
-    if u1 == 0:
+    if u1 <= 0:
         print("The first capacitor cannot be 0 μF. Please enter a valid capacitance.")
         return    
     u2 = math.exp(3)*math.sqrt(5)
