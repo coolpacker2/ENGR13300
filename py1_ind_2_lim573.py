@@ -45,18 +45,18 @@ def main():
     parallel = u1 + u2
     
     # Format the values with the µF symbol first to avoid confusion in print statement
-    u1_str = f"{u1:.1f} µF"
-    u2_str = f"{u2:.1f} µF"
-    series_str = f"{series:.1f} µF"
-    parallel_str = f"{parallel:.1f} µF"
+    u1_str = f"{u1:.1f} μF"
+    u2_str = f"{u2:.1f} μF"
+    series_str = f"{series:.1f} μF"
+    parallel_str = f"{parallel:.1f} μF"
 
 
     #< and > are used to align the text in the output, the number is the amount of characters that the output will be forced into
     # Print headers and formatted rows (12-space width for number columns)
-    print(f"{'Type':<8}{'First':>12}{'Second':>12}{'Total':>12}")
+    print(f"{'Type':<8}{'First':>12}{'Second':>12}{'Total ':>12}")
     print(f"{'Series':<8}{u1_str:>12}{u2_str:>12}{series_str:>12}")
     print(f"{'Parallel':<8}{u1_str:>12}{u2_str:>12}{parallel_str:>12}")
-    #1f obviously sets it to one decimal place
+    #1f sets it to one decimal place
 
 if __name__ == "__main__":
     main()
