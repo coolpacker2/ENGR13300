@@ -6,7 +6,7 @@ Description:
     In this task, I will be writing a UDF to perform specific calculations in Python.
 
 Assignment Information:
-    Assignment:     14.1.2. Task 0 py2 pre 0
+    Assignment:     14.1.2. Task py2 team 1
     Team ID:        LC5
     Author:         Stephen Lim, lim573@purdue.edu
     Date:           9/11/2026
@@ -36,9 +36,9 @@ Academic Integrity Statement:
 import math
 #define calc_perform function as stated by the assignment instructions, with parameters a, b, and c
 def calc_perform(dictionary):
-    a = dictionary.get("user_a")
-    b = dictionary.get("user_b")
-    c = dictionary.get("user_c")
+    a = dictionary.get("a")
+    b = dictionary.get("b")
+    c = dictionary.get("c")
     if a>4:
         return (a**2 + math.cos(b) - math.log(c))/(b-c*a)
        #is a<4
@@ -52,9 +52,10 @@ def main():
     b = int(input("Input a number for variable b: "))
     c = int(input("Input a number for variable c (must be a non-negative integer): "))
     #print the results of the calculation
-    dictionary = {"user_a":a, "user_b":b, "user_c":c}
+    dictionary = {"a":a, "b":b, "c":c}
     print("The result of the function was " + str(round(calc_perform(dictionary=dictionary),2)))
 
 
 if __name__ == "__main__":
     main()
+
