@@ -52,7 +52,7 @@ def main():
     b = int(input("Input a number for variable b: "))
     c = int(input("Input a number for variable c (must be a non-negative integer): "))
     #print the results of the calculation
-    dictionary = {"a":a, "a":b, "a":c}
+    dictionary = {"a":a, "b":b, "c":c}
     print("The result of the function was " + str(round(calc_perform(dictionary=dictionary),2)))
 
 
