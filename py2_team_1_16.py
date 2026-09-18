@@ -53,7 +53,7 @@ def main():
     c = int(input("Input a number for variable c (must be a non-negative integer): "))
     #print the results of the calculation
     dictionary = {"a":a, "b":b, "c":c}
-    print("The result of the function was " + str(float(round(calc_perform(dictionary=dictionary),2),2)))
+    print("The result of the function was " + str(f"{round(calc_perform(dictionary=dictionary),2):.2f}"))
 
 
 if __name__ == "__main__":
