@@ -41,7 +41,7 @@ def calc_perform(dictionary):
     c = dictionary.get("c")
     if a>4:
         return (a**2 + math.cos(b) - math.log(c))/(b-c*a)
-       #is a<4
+       #is a>4?
     else:
         #return alternate result if a is less than or equal to 4
         return math.sqrt(a+b)/(math.factorial(c)+math.sin(b))
@@ -53,7 +53,7 @@ def main():
     c = int(input("Input a number for variable c (must be a non-negative integer): "))
     #print the results of the calculation
     dictionary = {"a":a, "b":b, "c":c}
-    print("The result of the function was " + str(round(calc_perform(dictionary=dictionary),2)))
+    print("The result of the function was " + str(float(round(calc_perform(dictionary=dictionary),2),2)))
 
 
 if __name__ == "__main__":
