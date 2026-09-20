@@ -6,7 +6,7 @@ Description:
     Replace this line with a description of your program.
 
 Assignment Information:
-    Assignment:     15.1.2 py3 ind task 0
+    Assignment:     15.1.2 py3 pre 0
     Team ID:        LC5 - 16
     Author:         Stephen Lim, lim573@purdue.edu
     Date:           9/20/2026
@@ -34,14 +34,14 @@ Academic Integrity Statement:
 """ Write any import statements here (and delete this line)."""
 
 #two parameters, width and length
-def build_matrix(w, l):
+def build_matrix(r, c):
     matrix = []
     num = 0
     # two variables that track the matrix number and data that don't reset
-    for num_l in range(l):
+    for num_l in range(r):
         row = []
         # reset the row everytime it goes to a new row
-        for num_w in range(w):
+        for num_w in range(c):
             num+=1 #add to the number
             row.append(num)
         matrix.append(row) #add the finished row into the matrix
@@ -69,13 +69,13 @@ def traverse_with_while(X, stop):
         row+=1
 def main():
     print("Enter Matrix Dimensions")
-    user_w = int(input("Enter rows: "))
-    user_l = int(input("Enter columns: "))
-    traverse_with_for(build_matrix(user_w, user_l))
+    user_r = int(input("Enter rows: "))
+    user_c = int(input("Enter columns: "))
+    traverse_with_for(build_matrix(user_r, user_c))
     print("\n" + "Enter Matrix Dimensions")    
-    user_w = int(input("Enter rows: "))
-    user_l = int(input("Enter columns: "))
+    user_r = int(input("Enter rows: "))
+    user_c = int(input("Enter columns: "))
     user_stop = int(input("Enter Stop Value: "))
-    traverse_with_while(build_matrix(user_w, user_l), user_stop)
+    traverse_with_while(build_matrix(user_r, user_c), user_stop)
 if __name__ == "__main__":
     main()
