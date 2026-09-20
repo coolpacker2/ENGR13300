@@ -55,7 +55,7 @@ def traverse_with_for(X):
             print("X[" + str(row) + "," + str(ind_comp) + "] = " + str(X[row][ind_comp]))
 
 def traverse_with_while(X, stop):
-    print("WHILE loop traversal: ")
+    print("WHILE loop traversal:")
     row = 0
     
     while row in range(len(X)):
