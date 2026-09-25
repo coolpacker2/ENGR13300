@@ -1,15 +1,15 @@
 """
 Course Number: ENGR 13300
-Semester: e.g. Spring 2026
+Semester: Fall 2026
 
 Description:
     Replace this line with a description of your program.
 
 Assignment Information:
     Assignment:     e.g. 7.2.1 Py1 Team 1 (for Python 1 Team task 1)
-    Team ID:        ### - ## (e.g. LC1 - 01; for section LC1, team 01)
-    Author:         Name, login@purdue.edu
-    Date:           e.g. 01/23/2026
+    Team ID:        LC5 - 16
+    Author:         Stephen Lim, lim573@purdue.edu
+    Date:           9/25/2026
 
 Contributors:
     Name, login@purdue [repeat for each]
