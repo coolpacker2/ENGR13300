@@ -31,12 +31,46 @@ Academic Integrity Statement:
     submitting is my own original work.
 """
 
-""" Write any import statements here (and delete this line)."""
+import math
+import numpy as np
+def calculate_integral(a,b,dec,un):
+    sum = 0
+    for i in range(un+1): #this +1 fixes the delay by making n=0 actually loop 1 time
+        #below we calculate the integral approximation
+        sum += np.power(-1,i)*(np.power(b,(2*i+1))-np.power(a,(2*i+1)))/((2*i+1)*(math.factorial(2*i+1)))
+    return f"{sum:.{dec}f}" #set it to the amount of decimal places requested
 
 
+    
 def main():
-    """Write your code here (and delete this line)."""
-
-
+    user_a = float(input("Enter the lower limit of integration: "))
+    user_b = float(input("Enter the upper limit of integration: "))
+    user_dec = int(input("Enter the number of decimal places for convergence: "))
+    user_terms = int(input("Enter the maximum number of terms: "))
+    
+    last_num = 0
+    count = 0
+    # if the user put in a negative amount of terms, warn them
+    if user_terms < 0:
+        print("Error: Input a positive integer")
+        return
+    else:
+        print("\nApproximations:")
+        for i in range(user_terms):
+            if last_num == calculate_integral(user_a, user_b, user_dec, i):
+                count+=1 #track repeats
+            else:
+                count = 0 #reset counter
+            if count!=3:
+                print("n = " + str(i) + ": sum = " + str(calculate_integral(user_a, user_b, user_dec, i)))
+                last_num = calculate_integral(user_a, user_b, user_dec, i) #set the last num to the new number
+            else: #series converged
+                print("The integral from " + str(user_a) + " to " + str(user_b) + " is estimated to be " + str(last_num) + ".")
+                print("Total number of terms: " + str(i))
+                return
+    #if the count is less than 3, warn that the series did not converge fully yet to that many decimals
+    if count < 3:
+        print("Error: The approximation did not converge to " + str(user_dec) + " decimal places with only " + str(user_terms) + " terms.")
+        
 if __name__ == "__main__":
     main()
