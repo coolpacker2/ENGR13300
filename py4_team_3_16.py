@@ -33,44 +33,46 @@ Academic Integrity Statement:
     submitting is my own original work.
 """
 
+def create_dict():
+    dictionary = {}
+    #read file and extract the rows
+    with open("py4_task3_input.txt", "r") as data:
+        file = data.readlines()
 
-#read file and extract the rows
-with open("py4_task3_input.txt", "r") as data:
-    file = data.readlines()
-#define data read from the file
-length = file[1]
-episilon = file[2]
-absorbancy1 = file[3]
-absorbancy2 = file[4]
-absorbancy3 = file[5]
+    
+    for i in range(len(file)):
+        #split first
+        file_split = file[i].split(":")
+        #strip out the dictionary key
+        file_param_name = file_split[0].strip()
+        #strip out the data that will be appended to the list belonging to the dictionary key.
+        file_param_data = file_split[1].strip()
+        if file_param_name not in dictionary:
+            dictionary[file_param_name] = []
 
 
-def absorb_calc(length, epsilon, absorbancy):
-    #first data filter is split
-    f1l = length.split(":")
-    f1e = epsilon.split(":")
-    f1a = absorbancy.split(":")
-    #second filter is strip and turn into float
-    f2l = float(f1l[1].strip())
-    f2e = float(f1e[1].strip())
-    f2a = float(f1a[1].strip())
-    conc = f2a/(f2l*f2e)
-    data = [f2a, conc]
-    #return a list of data
-    return data
+        if file_param_name != 'Name':
+            dictionary[file_param_name].append(float(file_param_data))
+        else:
+            dictionary[file_param_name].append(file_param_data)    
+    return dictionary
+
+
+def absorb_calc(absorbency, length, epsilon):
+    #calculation that takes floats
+    conc = absorbency/(length*epsilon)
+    return conc
     
     
 
 def main():
-    print("The name of the substance is Glucose Oxidase")
-    #concentration calculations with parameters put in
-    c1 = absorb_calc(length = length, epsilon=episilon, absorbancy=absorbancy1)
-    c2 = absorb_calc(length = length, epsilon=episilon, absorbancy=absorbancy2)
-    c3 = absorb_calc(length = length, epsilon=episilon, absorbancy=absorbancy3)
-    #print results and draw data out of the list.
-    print(f"For {c1[0]:.4f} absorbency value, the concentration is {c1[1]:.7f}")
-    print(f"For {c2[0]:.4f} absorbency value, the concentration is {c2[1]:.7f}")
-    print(f"For {c3[0]:.4f} absorbency value, the concentration is {c3[1]:.7f}")
+    dictionary = create_dict()
+    print(f"The name of the substance is {dictionary['Name'][0]}")
+    for i in dictionary["Absorbency"]: #pass dictionary data through the function for however many absorbencies must be tested.
+        c = absorb_calc(length = dictionary["Path Length"][0], epsilon=dictionary["Molar Extinction Coefficient"][0], absorbency=i)
+        print(f"For {i:.4f} absorbency value, the concentration is {c:.7f}")    
+    
+    
 
 
 
