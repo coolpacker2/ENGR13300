@@ -1,9 +1,9 @@
 """
 Course Number: ENGR 13300
-Semester: e.g. Spring 2026
+Semester: Fall 2026
 
 Description:
-    Replace this line with a description of your program.
+    Analyze a chosen txt file by the user and return several n graph plots and a csv describing n-gram size frequencies for terms.
 
 Assignment Information:
     Assignment:     16.3.1 py4 ind 1 (for Python 4 Individual task 1)
@@ -35,8 +35,7 @@ from pathlib import Path
 import csv
 import matplotlib.pyplot as plt
 
-path = Path("sample_texts")
-files = list(path.iterdir())
+
 
 def clean_text(text):
     #convert to lowercase
@@ -132,6 +131,8 @@ def plot_top_k(models, language, k=10):
     plt.show()
 
 def main():
+    path = Path("sample_texts")
+    files = list(path.iterdir())
     for i in range(0, len(files)):
         file_name_txt = (files[i].name).split("sample_")[1]
         file_name = file_name_txt.split(".txt")[0]
