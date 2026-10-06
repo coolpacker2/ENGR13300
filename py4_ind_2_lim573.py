@@ -69,7 +69,7 @@ def n_gram_dist(unknown_text, known_text):
     for ngram in unknown_text:
         if ngram not in all_n_grams:
             all_n_grams.append(ngram)
-    all_n_grams = sorted(all_n_grams)
+
     
     #loop through unique n_grams
     for ngram in all_n_grams:
@@ -85,7 +85,7 @@ def n_gram_dist(unknown_text, known_text):
             freq_k = 0.0
 
         #add diff to total
-        diffs.append(abs(freq_k - freq_un))
+        diffs.append(round(abs(freq_un - freq_k),14))
 
     return sum(diffs)
 
@@ -131,7 +131,7 @@ def main():
     #read unknown text, build a n-gram dict
     with open(files[req_file - 1], 'r', encoding='utf-8') as f:
         text = f.read()
-    unknown_dict = (create_n_gram(req_n_size, clean_text(text)))
+    unknown_dict = normalize_n_gram(create_n_gram(req_n_size, clean_text(text)))
     scores = score_language(known_models, unknown_dict)
     #best lang key is when score is smallest
     best_lang = min(scores, key=scores.get)
