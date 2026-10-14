@@ -66,8 +66,10 @@ def load_img(file_path):
 
         NormalArray = ArrayImage / 255.0
 
-        
+    else:
 
+        NormalArray = ArrayImage
+        
     TempArray = np.zeros_like(NormalArray)
 
     
@@ -112,9 +114,7 @@ def load_img(file_path):
 
                         TempArray[r][g][b] = ((v + 0.055) / 1.055) ** 2.4
 
-                            
-
-    return TempArray, OpenImage #returns the PIL image from before so I can get its size later
+    return TempArray #returns the PIL image from before so I can get its size later
 
 
 def resize_image(original_image_array, new_size): 
@@ -124,6 +124,22 @@ def resize_image(original_image_array, new_size):
     #outputs: resized img as a np array
 
     pil_img = Image.fromarray(original_image_array) #converts np array back to PIL array so we can use .resize() on it
+
+    orig_height, orig_width = original_image_array.shape[:2]
+
+    target_width, target_height = new_size
+
+    original_ratio = orig_width / orig_height
+
+    target_ratio = target_width / target_height
+
+    if original_ratio >= target_ratio:
+
+        intermediate_dimensions = [int(target_size_tuple[0] / original_ratio), int(target_size_tuple[1])] #list to be made into tuple
+
+    else:
+
+        intermediate_dimensions = [int(target_size_tuple[0]), int(target_size_tuple[1] / original_ratio)]
 
     resized_img = pil_img.resize(new_size) #resizes using PIL's Image.resize() which only works on PIL images, not np arrays
 
@@ -140,7 +156,15 @@ def pad_image(resized_img_array, target_size):
 
     pil_img = Image.fromarray(resized_img_array) #converts
 
-    padded_img = ImageOps.pad(pil_img, target_size, color=(0,0,0)) #pads image to target_size with black bars
+    if resized_img_array.ndim == 2:
+
+        pad_color = 0
+
+    else:
+
+        pad_color = (0, 0, 0)
+
+    padded_img = ImageOps.pad(pil_img, target_size, color=pad_color)
 
     padded_np_array = np.array(padded_img)
 
@@ -154,10 +178,14 @@ def main():
 
     file_path = input("Enter the path of the image you want to clean: ")
 
-    img_array, img_PIL = load_img(file_path)
+    img_array = load_img(file_path)
 
     img_array = (img_array * 255).astype(np.uint8) #converts the img_array from a bunch of floats in the [0.1,1.0] range to uint8 numbers in the [0,255] range because thats what resize_image() uses
 
+    original_ratio = img_PIL.size[0] / img_PIL.size[1] #divides width by height to get aspect ratio
+
+    #save original shape width, height to print later
+    orig_shape_wh = (img_array.shape[1], img_array.shape[0])
 
     #prompts user to give width and height, then turns that into a tuple
 
@@ -170,17 +198,9 @@ def main():
 
     #check and accomodate for the aspect ratios and change values to prevent distortion
 
-    original_ratio = img_PIL.size[0] / img_PIL.size[1] #divides width by height to get aspect ratio
-
     target_ratio = target_size_tuple[0] / target_size_tuple[1]
 
-    if original_ratio >= target_ratio:
-
-        intermediate_dimensions = [int(target_size_tuple[0] / original_ratio), int(target_size_tuple[1])] #list to be made into tuple
-
-    else:
-
-        intermediate_dimensions = [int(target_size_tuple[0]), int(target_size_tuple[1] / original_ratio)]
+    
 
     
 
@@ -191,11 +211,11 @@ def main():
 
     padded_image = pad_image(resized_array, target_size_tuple)
 
-    print(f"Image shape before cleaning: {img_array.shape[:2]}")
+    print(f"Image shape before cleaning: {orig_shape_wh}")
 
-    print(f"Image shape after resizing: {resized_array.shape[:2]}")
+    print(f"Image shape after resizing: {(resized_array.shape[1], resized_array.shape[0])}")
 
-    print(f"Image shape after cleaning: {padded_image.shape[:2]}") 
+    print(f"Image shape after cleaning: {(padded_image.shape[1], padded_image.shape[0])}")
 
 
     #display image
