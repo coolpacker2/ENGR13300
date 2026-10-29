@@ -3,7 +3,7 @@ Course Number: ENGR 13300
 Semester: Fall 2026
 
 Description:
-    dsgfdgfd
+    Our goal is to extract features from images (hue_mean,hue_std,saturation_mean,saturation_std, etc) and save them in a CSV file. 
 
 Assignment Information:
     Assignment:    8.2.3 tp2 team 2
@@ -12,9 +12,7 @@ Assignment Information:
     Date:          10/17/2026
 
 Contributors:
-    Nathan Crute, ncrute@purdue.edu
-    Hari Ghatpande, sghatpan@purdue.edu
-    Zane Danger Clark, clar1439@purdue.edu
+    Name, login@purdue [repeat for each]
 
     My contributor(s) helped me:
     [ ] understand the assignment expectations without
@@ -39,6 +37,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 import cv2
+import os
+from pathlib import Path
 #---------------------------------old functions
 def load_img(OpenImage):
     #convert image to numpy float array
@@ -53,7 +53,6 @@ def load_img(OpenImage):
         NormalArray = ArrayImage/255.0
     else: NormalArray = ArrayImage
 
-    #shortened by hari
     linear_array = np.zeros_like(NormalArray, dtype=np.float32)
     is_dark = NormalArray <= 0.04045
     linear_array[is_dark] = NormalArray[is_dark]/12.92
@@ -133,11 +132,11 @@ def rgb_to_hsv(R,G,B):
         hue_prime = 0
     else:
         if max_component == normal_R:
-            hue_prime = (60 * ((normal_G - normal_B) / component_delta)) % 360
+            hue_prime = (60 * ((normal_G - normal_B) / component_delta) + 360) % 360 #campus wire comment (Brianna Lewis)
         elif max_component == normal_G:
-            hue_prime = (60 * ((normal_B - normal_R) / (component_delta)) + 120) % 360
+            hue_prime = (60 * ((normal_B - normal_R) / component_delta) + 120) % 360
         elif max_component == normal_B:
-            hue_prime = (60 * ((normal_R - normal_G) / (component_delta)) + 240) % 360
+            hue_prime = (60 * ((normal_R - normal_G) / component_delta) + 240) % 360
 
     #calculate saturation_prime
     if max_component == 0:
@@ -149,7 +148,7 @@ def rgb_to_hsv(R,G,B):
     value_prime = max_component
 
     #rescale values to be from 0 to 255
-    hue = ((hue_prime / 360) * 255)
+    hue = hue_prime * 255 / 360 #campus wire comment (Brianna Lewis)
     saturation = (saturation_prime * 255)
     value = (value_prime * 255)
     return (hue,saturation,value)
@@ -168,20 +167,51 @@ def resize_image(original_image_array, new_size):
     resized_np_array = np.array(resized_img) #converts resized PIL Image back to np array
     return resized_np_array
 
-def sobel_filter():
-    return "Filler"
+
+def sobel_filter(image):
+    # initialize sobel x and y
+    sobelx = np.array([[-1, 0, 1],[-2, 0, 2],[-1,0,1]],dtype=float)
+    sobely = np.array([[-1,-2,-1],[0,0,0],[1,2,1]],dtype=float)
+    image_arr = np.array(image,dtype=float)
+    # we know the kernel size because we are given the kernels
+    kernel_size = 3
+    # just one pixel of padding
+    pad = 1
+
+    padded_image = np.pad(image_arr, pad, mode='constant',constant_values=0)
+    output = np.zeros_like(image_arr,dtype=np.uint8)
+    threshold = 50
+    # apply the kernel
+    h, w = image_arr.shape
+    gradient_min = 10000
+    gradient_max = 0
+    for i in range(h):
+        for j in range(w):
+            window = padded_image[i:i+kernel_size,j:j+kernel_size]
+
+            gx = np.sum(window*sobelx)
+            gy = np.sum(window*sobely)
+            # multiply by 255 to de-normalize
+            gradient_magnitude = math.sqrt(gx**2 + gy**2)
+            
+            if (gradient_magnitude >= threshold):
+                output[i,j] = 255
+            else:
+                output[i,j] = 0
+    return output
 
 #------------------------------new functions
 def detect_circle(gray_img):
     """Detects if a large circle is present. Returns 1 if found, 0 otherwise."""
     # Hough Circles works best on a grayscale, slightly blurred image
 
-    blurred_img = gaussian_filter(gray_img, sigma=1.5) #Use gaussian_filter (from the previous checkpoint) with sigma=1.5 to blur the input grayscale image
+    blurred_img = gaussian_filter(gray_img, sigma=1.5) #Use gaussian_filter with sigma=1.5 to blur the input image
     blurred_img_array = np.array(blurred_img)  # Convert to NumPy array for processing with cv2
+    blurred_img_array = blurred_img_array.astype(np.uint8)  #cv2.HoughCircles requires an 8-bit image
 
     # Detect circles
     circles = cv2.HoughCircles(
-        blurred_img,
+        blurred_img_array,
         cv2.HOUGH_GRADIENT,
         dp=1.2,  # Inverse ratio of accumulator resolution
         minDist=50,  # Minimum distance between centers of detected circles
@@ -190,7 +220,7 @@ def detect_circle(gray_img):
         minRadius=20,  # Minimum circle radius to detect
         maxRadius=50  # Maximum circle radius to detect
     )
-    if circles == None:
+    if circles is None:
         return 0
     else:
         return 1
@@ -211,15 +241,41 @@ def detect_triangle(gray_img):
 def count_lines(gray_img):
     """Counts the number of lines in an image using Hough Line Transform."""
     # Edge detection via sobel filtering is a prerequisite for Hough Lines
-    edges = 3#: Use sobel_filter (from Task 1) on the input grayscale image
+    edges = sobel_filter(gray_img) #Use sobel_filter on the input grayscale image
 
     # Detect lines using the edge map
     lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=50, minLineLength=30, maxLineGap=10)
 
-    return "placeholder"#: return the number of lines detected, if no lines are detected return 0
+    if lines is None: #if no lines are detected return 0
+        return 0
+    return len(lines) #return the number of lines detected
 
 def extract_features(img_array):
-    print("Features")
+    #inputs: np array of the resized and padded RGB image (100x100x3)
+    #outputs: list of the nine features in the required order
+    
+    #convert the rgb image to hsv
+    hsv_img = convert_to_hsv(img_array)
+
+    #calculate the mean and standard deviation of each hsv channel
+    hue_mean = np.mean(hsv_img[:, :, 0])
+    hue_std = np.std(hsv_img[:, :, 0])
+    saturation_mean = np.mean(hsv_img[:, :, 1])
+    saturation_std = np.std(hsv_img[:, :, 1])
+    value_mean = np.mean(hsv_img[:, :, 2])
+    value_std = np.std(hsv_img[:, :, 2])
+
+    #convert the rgb image to grayscale for the shape based features
+    gray_img = rgb_to_grayscale(img_array)
+
+    #calculate the shape based features
+    number_lines = int(count_lines(gray_img))
+    has_circle = int(detect_circle(gray_img))
+    has_triangle = int(detect_triangle(gray_img))
+
+    #return all nine features in the required order
+    return [hue_mean, hue_std, saturation_mean, saturation_std, value_mean, value_std,
+            number_lines, has_circle, has_triangle]
 
 def main():
     folder_name = input("Enter the name of the dataset folder:\n")
@@ -229,9 +285,41 @@ def main():
     print("\nTraining Metadata DataFrame:")
     print(loaded_csv.head())
 
+    #column names for the final feature dataset
+    feature_columns = ["hue_mean", "hue_std", "saturation_mean", "saturation_std", "value_mean", "value_std", "number_lines", "has_circle", "has_triangle", "Path", "ClassId"]
 
-    
-    image_name = input("Enter the Path of the image you want to display the features for: ")
+    feature_rows = []
+    if Path(csv_features_name).exists():
+        feature_df = pd.read_csv(csv_features_name)
+    #process each row of the metadata dataframe
+    else:
+        for index, row in loaded_csv.iterrows():
+            image_path = row["Path"]
+            class_id = row["ClassId"]
+            full_path = os.path.join(folder_name, image_path)
+            linear_img = load_img(Image.open(full_path))
+            uint8_img = (linear_img * 255).astype(np.uint8)
+            resized_img = resize_image(uint8_img, (100, 100))
+            padded_img = pad_image(resized_img, ((0, 0), (0, 0), (0, 0)))
+            features = extract_features(padded_img)
+            feature_rows.append([float(f) for f in features] + [image_path, class_id])
+
+        feature_df = pd.DataFrame(feature_rows, columns=feature_columns)
+        feature_df[feature_columns[:9]] = feature_df[feature_columns[:9]].astype(float)
+        feature_df.to_csv(csv_features_name, index=False)
+
+    print(f"\nFeatures have been extracted and saved to {csv_features_name}")
+
+    #print the shape and head of the final dataset
+    print("\nFeature Dataset Shape:")
+    print(feature_df.shape)
+    print("\nFeature Dataset Head:")
+    print(feature_df.head())
+    print("")
+    image_name = input("Enter the Path of the image you want to display the features for:\n")
+    #filter the dataframe for the row matching the image path and print it
+    print(f"\nFeatures for {image_name}:")
+    print(feature_df[feature_df["Path"] == image_name])
 
 
 if __name__ == "__main__":
