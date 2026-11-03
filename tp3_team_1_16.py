@@ -34,9 +34,9 @@ Academic Integrity Statement:
     another student access to my code.  The project I am
     submitting is my own original work.
 """
+
 import pandas as pd
 import numpy as np
-
 
 def scale_features(df, feature_columns):
     # standardize each feature column in place: subtract its mean, divide by its standard deviation
